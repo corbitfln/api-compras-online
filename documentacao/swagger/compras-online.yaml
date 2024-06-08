@@ -1,0 +1,410 @@
+openapi: 3.0.0
+info:
+  title: API Compras Online
+  description: Documentação interativa da API Rest Compras Online.
+  version: '1.0'
+
+security:
+  - BasicAuth: []
+
+tags:
+  - name: Pedido de Compra
+    description: Pedidos de Compra 
+  - name: Usuário
+    description: Usuários
+
+paths:
+  /usuario:
+    get:
+      tags:
+        - Usuário
+      summary: Pesquisar usuários.
+      description: Retorna uma lista de usuarios.
+      operationId: pesquisarUsuarios
+      responses:
+        '200':
+          $ref: '#/components/responses/UsuariosEncontrado'
+        '401':
+          $ref: '#/components/responses/AcessoNaoAutorizado'
+        '403':
+          $ref: '#/components/responses/PermissaoNegada'
+        '500':
+          $ref: '#/components/responses/ErroServidor'          
+                
+
+  /pedidos-compra:
+    get:
+      tags:
+        - Pedido de Compra
+      summary: Pesquisar pedidos de compra.
+      description: Retorna uma lista de pedidos de compra.
+      operationId: pesquisarPedidos
+      parameters:
+        - $ref: '#/components/parameters/data' 
+        - $ref: '#/components/parameters/usuario'
+        - $ref: '#/components/parameters/situacao'
+        - $ref: '#/components/parameters/numeroPagina'
+        - $ref: '#/components/parameters/tamanhoPagina'
+        - $ref: '#/components/parameters/sort'
+
+      responses:
+        '200':    
+          $ref: '#/components/responses/PedidosEncontrado'
+        '401':
+          $ref: '#/components/responses/AcessoNaoAutorizado'
+        '403':
+          $ref: '#/components/responses/PermissaoNegada'
+        '404':
+          $ref: '#/components/responses/RecursoNaoEncontrado'
+        '500':
+          $ref: '#/components/responses/ErroServidor'   
+
+    post:
+      tags:
+        - Pedido de Compra
+      summary: Criar um pedido de compra.
+      description: Criar um pedido de compra.
+      operationId: criarPedido
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pedido'
+      responses:
+        '201':    
+          $ref: '#/components/responses/PedidoCriado'    
+        '400':
+          $ref: '#/components/responses/DadosValidadosPedido'
+        '401':
+          $ref: '#/components/responses/AcessoNaoAutorizado'
+        '403':
+          $ref: '#/components/responses/PermissaoNegada'
+        '500':
+          $ref: '#/components/responses/ErroServidor'          
+
+  /pedidos-compra/{identificador}:
+    get:
+      tags:
+        - Pedido de Compra
+      summary: Consultar pedido.
+      description: Retorna um Pedido com o identificador informado.
+      operationId: consultarPedido
+      parameters:
+        - name: identificador
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':    
+          $ref: '#/components/responses/PedidosEncontrado'      
+        '400':
+          $ref: '#/components/responses/DadosValidadosPedido'          
+        '401':
+          $ref: '#/components/responses/AcessoNaoAutorizado'
+        '403':
+          $ref: '#/components/responses/PermissaoNegada'
+        '404':
+          $ref: '#/components/responses/RecursoNaoEncontrado'          
+        '500':
+          $ref: '#/components/responses/ErroServidor'          
+
+
+    delete:
+      tags:
+        - Pedido de Compra
+      summary: Cancelar um pedido.
+      description: Cancelar um pedido pelo identificador.
+      operationId: cancelarPedido
+      parameters:
+        - name: identificador
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Pedido de compra cancelado.
+        '400':
+          $ref: '#/components/responses/DadosValidadosPedido'          
+        '401':
+          $ref: '#/components/responses/AcessoNaoAutorizado'
+        '403':
+          $ref: '#/components/responses/PermissaoNegada'
+        '404':
+          $ref: '#/components/responses/RecursoNaoEncontrado'          
+        '500':
+          $ref: '#/components/responses/ErroServidor'          
+
+    patch:
+      tags:
+        - Pedido de Compra
+      summary: Devolver um item de pedido.
+      description: Devolução de um item pedido informando o código do item pedido.
+      operationId: devolverItemPedido
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AtualizaSituacaoItemPedido'
+      parameters:
+        - name: identificador
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':    
+          $ref: '#/components/responses/PedidoAtualizado'    
+        '400':
+          $ref: '#/components/responses/DadosValidadosPedido'          
+        '401':
+          $ref: '#/components/responses/AcessoNaoAutorizado'
+        '403':
+          $ref: '#/components/responses/PermissaoNegada'
+        '404':
+          $ref: '#/components/responses/RecursoNaoEncontrado'          
+        '500':
+          $ref: '#/components/responses/ErroServidor'          
+
+
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+
+  schemas:  
+
+
+
+    AtualizaSituacaoItemPedido:
+      type: object
+      properties:
+        situacao:
+          description: Identificador da Situação do Item do Pedido  (1 = FATURADO, 2 = DEVOLVIDO)
+          type: integer
+          format: int32
+          enum: [1,2]       
+          example: 2
+
+    Usuario:
+      type: object
+      properties:
+        cpf: 
+          type: string  
+          description:  Cpf do dependente
+          example: "857.328.262-20"
+        nome:
+          type: string
+          description:  Nome do Usuario
+          example:  "João"
+        email:
+          type: string
+          description:  E-mail do usuário
+          example:  "joao@gmail.com"          
+        senha:
+          type: string
+          description:  Senha do usuário
+          example:  "123456"          
+
+    Pedido:
+      type: object
+      properties:
+        usuario:
+          type: integer
+          format: int32
+          description: Identificador do Usuário 
+          example:  1
+        situacao:
+          type: integer
+          format: int32
+          description: Identificador da Situação da Pedido  (1 = ABERTO, 2 = CANCELADO, 3 = CONCLUIDO)
+          enum: [1,2,3]       
+          example: 1'
+        dataCriacao:
+          type: string
+          format: date-time
+          description: Data da criação do Pedido no formato ISO-8601 <[YYYY-MM-DD]T[hh]:[mm]:[ss]>
+          example: "2021-10-18T13:58:59"
+        total:
+          type: number        
+          format: float
+          description: Total do Pedido de Compra
+          example: 1100.05  
+        itenspedido:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemPedido'                    
+
+    ItemPedido:
+      type: object
+      properties:
+        produto:
+          type: integer
+          format: int32
+          description: Identificador do Produto
+          example:  1
+      
+        situacao:
+          type: integer
+          format: int32
+          description: Identificador da Situação do Item do Pedido  (1 = FATURADO, 2 = DEVOLVIDO)
+          enum: [1,2,3]       
+          example: 1
+        cpf: 
+          type: string  
+          description:  Cpf do dependente
+          example: "857.328.262-20"
+
+
+    Mensagem:
+      type: object
+      properties:
+        codigo:
+          type: string
+          description:  Descrição da chave de validação do pedido
+          example: "dominio.pedido.validacao.xxxx"
+        descricao:
+          type: string
+          description:  Descrição da validação do pedido 
+          example:  "Mensagem de validação s ser definida."            
+
+  parameters:
+    data:
+      name: data
+      in: query
+      description: Data da criação do Pedido
+      schema:
+          type: string
+          format: date 
+          example: "2021-10-18"
+  
+    usuario:
+      name: usuario
+      in: query
+      description: Identificador do Usuario do Pedido
+      schema:
+        type: integer
+        format: int32
+        example:  2
+
+    situacao:
+      name: situacao
+      in: query
+      description: Identificador da Situação da Pedido  (1 = ABERTO, 2 = CANCELADO, 3 = CONCLUIDO)
+      schema:
+        type: integer
+        format: int32
+        enum: [1,2,3]       
+        example: 1
+
+
+    numeroPagina:
+      name: numeroPagina
+      in: query
+      description: Número da página a ser recuperada
+      schema:
+        type: integer
+        format: int32
+        example:  1
+
+    tamanhoPagina:
+      name: tamanhoPagina
+      in: query
+      description: Número de registros por página
+      schema:
+        type: integer
+        format: int32
+        example: 4
+
+    sort:    
+      name: sort      
+      in: query
+      description:  "Parâmetro usado na ordenação. Utilize [asc - para ordenação ascendente ou desc - para ordenação descendente]. Exemplo : &sort=dataCriacao,asc&sort=total,desc"
+      schema:
+        type: array
+        items:
+          default:  dataCriacao, asc
+          
+           
+  responses:
+
+    PedidoAtualizado:
+      description: Operação realizada com sucesso. Pedido atualizado com o identificador informado.          
+      content:
+        application/json:
+          schema: 
+            $ref: '#/components/schemas/Pedido'
+
+    PedidoEncontrado:
+      description: Operação realizada com sucesso. Pedido encontrado com o identificador informado.          
+      content:
+        application/json:
+          schema: 
+            $ref: '#/components/schemas/Pedido'
+            
+
+    PedidoCriado:
+      description: Operação realizada com sucesso. Pedido criado.          
+      content:
+        application/json:
+          schema: 
+            $ref: '#/components/schemas/Pedido'
+
+    UsuariosEncontrado:
+      description: Operação realizada com sucesso. Resultado contendo Usuarios.
+      content:
+        application/json:
+          schema: 
+            type: array
+            items:
+              $ref: '#/components/schemas/Usuario'
+
+    PedidosEncontrado:
+      description: Operação realizada com sucesso. Resultado contendo Pedidos.
+      content:
+        application/json:
+          schema: 
+            type: array
+            items:
+              $ref: '#/components/schemas/Pedido'
+
+    DadosValidadosPedido:
+      description: Validação dos dados de entrada do pedido de compra.          
+      content:
+        application/json:
+          schema: 
+            type: array
+            items:
+              $ref: '#/components/schemas/Mensagem'
+
+    RecursoNaoEncontrado:
+      description: Recurso não encontrado.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Mensagem'
+
+    AcessoNaoAutorizado:
+      description: Acesso não autorizado.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Mensagem'        
+
+    PermissaoNegada:
+      description: Permissão negada para acessar o recurso.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Mensagem'        
+
+    ErroServidor:
+      description: Erro interno da aplicação. Tente novamente mais tarde.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Mensagem'        
