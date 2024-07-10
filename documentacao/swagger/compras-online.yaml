@@ -36,8 +36,8 @@ paths:
     get:
       tags:
         - Pedido de Compra
-      summary: Pesquisar pedidos de compra.
-      description: Retorna uma lista de pedidos de compra.
+      summary: Pesquisar pedidos.
+      description: Retorna uma lista de pedidos.
       operationId: pesquisarPedidos
       parameters:
         - $ref: '#/components/parameters/data' 
@@ -62,8 +62,8 @@ paths:
     post:
       tags:
         - Pedido de Compra
-      summary: Criar um pedido de compra.
-      description: Criar um pedido de compra.
+      summary: Criar um pedido.
+      description: Criar um pedido.
       operationId: criarPedido
       requestBody:
         required: true
@@ -140,8 +140,8 @@ paths:
     patch:
       tags:
         - Pedido de Compra
-      summary: Devolver um item de pedido.
-      description: Devolução de um item pedido informando o código do item pedido.
+      summary: Devolver um produto.
+      description: Devolução de um  produto informando o seu código.
       operationId: devolverItemPedido
       requestBody:
         required: true
@@ -407,4 +407,4 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Mensagem'        
+            $ref: '#/components/schemas/Mensagem'         
