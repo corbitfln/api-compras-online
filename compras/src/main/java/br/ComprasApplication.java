@@ -1,4 +1,4 @@
-package br.pucrs.edu;
+package br;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
