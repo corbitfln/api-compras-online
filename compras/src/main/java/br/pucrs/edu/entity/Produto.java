@@ -1,6 +1,6 @@
 package br.pucrs.edu.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Data;
 
 @Data

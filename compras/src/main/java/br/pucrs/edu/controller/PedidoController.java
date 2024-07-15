@@ -2,6 +2,8 @@ package br.pucrs.edu.controller;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +17,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import br.pucrs.edu.controller.dto.input.PedidoInputDto;
 import br.pucrs.edu.controller.dto.output.PedidoOutputDto;
 import br.pucrs.edu.entity.Pedido;
-import br.pucrs.edu.repository.PedidoRepository;
 import br.pucrs.edu.service.PedidoService;
-import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("/pedidos")
@@ -27,9 +28,7 @@ public class PedidoController {
 	@Autowired
 	PedidoService pedidoService;
 	
-	@Autowired
-	private PedidoRepository pedidoRepository;
-	
+
 	
 	@PostMapping(consumes = "application/json", produces = "application/json")	
 	public ResponseEntity<PedidoOutputDto> criarPedido(
