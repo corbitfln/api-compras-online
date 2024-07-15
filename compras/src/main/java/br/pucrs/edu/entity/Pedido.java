@@ -11,7 +11,9 @@ import lombok.Data;
 @Entity
 @Table(name="pedido")
 public class Pedido implements Serializable{
-    @Id
+	private static final long serialVersionUID = 1L;
+	
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="identificador")
     private Long identificador;
